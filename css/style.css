@@ -372,6 +372,7 @@ ul > li > a {
 body {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 .footer i.fa-mug-hot {
