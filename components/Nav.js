@@ -3,7 +3,7 @@ export class Nav {
     this.element = document.createElement("nav");
     this.element.classList.add("nav");
     this.element.innerHTML = `
-    <a href="#"><i class="fas fa-mug-hot"></i></a>
+    <a href=""><i class="fas fa-mug-hot"></i></a>
         <ul>
           <li><a href="#">Shop</a></li>
           <li><a href="#">Contacts</a></li>
