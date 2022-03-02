@@ -27,7 +27,7 @@ aside {
 }
 html,
 body {
-  height: 100%;
+  height: auto;
   width: 100%;
   font-size: 100%;
   line-height: 1;
@@ -94,8 +94,11 @@ h6 {
 }
 
 header {
+  top: 0;
+  position: sticky;
+  z-index: 999;
   width: 100%;
-  background-color: rgb(216 241 225);
+  background-color: rgb(202 253 221 / 90%);
   margin-bottom: 50px;
 }
 

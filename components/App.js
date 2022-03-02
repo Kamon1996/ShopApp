@@ -1,6 +1,7 @@
 import { main } from "./Main.js";
 import { busket } from "./Busket.js";
 import { product } from "./Product.js";
+import { getCookie, setCookie } from "./common.js";
 
 export class App {
   constructor() {
@@ -10,18 +11,18 @@ export class App {
     this.sumCount; // число товаров в корзине
     this.toBusketButtons;
     this.regularCount; // значение между + и -
-    if (this.getCookie("busket")) {
-      this.busket = JSON.parse(this.getCookie("busket"));
+    if (getCookie("busket")) {
+      this.busket = JSON.parse(getCookie("busket"));
       this.busketCount.innerHTML = this.busket.map(
         (v) => (this.sumCount += v.count)
       );
     } else {
       this.busket = []; // общий массив со всеми товарами в корзине
     }
-    this.totalCostBusket = document.createElement("div");
-    this.totalCostBusket.classList.add("total");
   }
   create() {
+    this.totalCostBusket = document.createElement("div");
+    this.totalCostBusket.classList.add("total");
     this.app = document.createElement("section");
     this.app.classList.add("app");
     this.wrapper = document.createElement("div");
@@ -37,22 +38,6 @@ export class App {
     this.wrapper.appendChild(this.app__inner);
     this.app.appendChild(this.wrapper);
     document.body.appendChild(this.app);
-  }
-
-  getCookie(name) {
-    let matches = document.cookie.match(
-      new RegExp(
-        "(?:^|; )" +
-          name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-          "=([^;]*)"
-      )
-    );
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-  }
-
-  replaceCookie(name) {
-    document.cookie =
-      `${name}=` + encodeURIComponent(JSON.stringify(this.busket));
   }
 
   async getFakeAPI() {
@@ -103,7 +88,7 @@ export class App {
   }
 
   getBusket() {
-    if (this.getCookie("busket")) {
+    if (getCookie("busket")) {
       busket.innerHTML = ``;
       this.busket.map((v) => {
         this.vp = this.prodcuts[v.id - 1];
@@ -154,27 +139,30 @@ export class App {
   hashChange() {
     if (location.hash === "#cart") {
       main.classList.add("hide");
-      product.classList.add('hide')
+      product.classList.add("hide");
       busket.classList.toggle("hide");
       this.getBusket();
-    } else if (location.hash === `#product/${location.hash.split(`product/`)[1]}`) {
+    } else if (
+      location.hash === `#product/${location.hash.split(`product/`)[1]}`
+    ) {
       busket.classList.add("hide");
       main.classList.add("hide");
-      product.classList.remove('hide');
-      this.item = this.prodcuts.find(item => item.id == location.hash.split(`product/`)[1])
+      product.classList.remove("hide");
+      this.item = this.prodcuts.find(
+        (item) => item.id == location.hash.split(`product/`)[1]
+      );
       this.getProduct(this.item);
     } else {
       busket.classList.add("hide");
-      product.classList.add('hide')
+      product.classList.add("hide");
       main.classList.remove("hide");
     }
   }
 
   setEventHashChange() {
-    window.addEventListener("hashchange", (e) => this.hashChange());
+    window.addEventListener("hashchange", () => this.hashChange());
     // window.addEventListener('beforeunload', (this.hashChange)) // event перед загрузкой?
   }
-
   setEventToAddButton() {
     this.toBusketButtons = main.querySelectorAll(".to__busket-add");
     this.toBusketButtons.forEach((el) => {
@@ -185,11 +173,10 @@ export class App {
         this.busketCount.innerHTML = ++this.sumCount;
         this.busketPrice.innerHTML =
           (this.sumPrice += this.prodcuts[el.id - 1].price).toFixed(2) + ` $`;
-        this.replaceCookie("busket");
+        setCookie("busket", this.busket);
       });
     });
   }
-
   setEventToPlusButtons() {
     main.querySelectorAll(".to__busket-plus").forEach((el) => {
       el.addEventListener("click", (e) => {
@@ -198,11 +185,10 @@ export class App {
         this.busket.map((v) => (v.id == el.id ? ++v.count : v));
         this.busketPrice.innerHTML =
           (this.sumPrice += this.prodcuts[el.id - 1].price).toFixed(2) + ` $`;
-        this.replaceCookie("busket");
+        setCookie("busket", this.busket);
       });
     });
   }
-
   setEvenToMinusButtons() {
     main.querySelectorAll(".to__busket-minus").forEach((el) => {
       el.addEventListener("click", (e) => {
@@ -222,7 +208,6 @@ export class App {
       });
     });
   }
-
   setEventToRemoveButton() {
     this.removeButton = busket.querySelectorAll(".remove").forEach((el) => {
       el.addEventListener("click", (e) => {
@@ -243,7 +228,7 @@ export class App {
               this.prodcuts[el.id - 1].price * this.elCount).toFixed(2)
           ) + ` $`;
         this.getBusket();
-        this.replaceCookie("busket");
+        setCookie("busket", this.busket);
       });
     });
   }
