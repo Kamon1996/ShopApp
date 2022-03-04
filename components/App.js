@@ -157,6 +157,7 @@ export class App {
       product.classList.add("hide");
       main.classList.remove("hide");
     }
+    window.scrollTo(0, 0)
   }
 
   setEventHashChange() {
